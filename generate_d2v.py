@@ -88,7 +88,7 @@ if __name__ == "__main__":
 	max_len = 3000000
 
 	
-	df = getDF('IRGNN_TNNLS_2021/data/raw/reviews_Video_Games.json.gz')
+	df = getDF('data/raw/reviews_Video_Games.json.gz')
 	df = df.groupby('asin').apply(concatReviews)
 	
 	# We disable parser and ner in order to save RAM	
@@ -99,6 +99,6 @@ if __name__ == "__main__":
 	
 	train_and_save_d2v(
 		tagged_reviews,
-		"IRGNN_TNNLS_2021/data/raw/reviews_Video_Games.d2v"
+		"data/raw/reviews_Video_Games.d2v"
 	)
 
