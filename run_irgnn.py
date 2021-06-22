@@ -23,7 +23,7 @@ val_ratio = 0.1
 test_ratio = 0.1  
 
 edge_type = 4
-batch_size = 512
+batch_size = 128
 
 # load data
 dataset = AmazonDataset("data/").shuffle()
