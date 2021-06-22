@@ -29,7 +29,8 @@ def negative_sampling(pos_edge_index, num_nodes):
         perm[rest] = tmp
         rest = mask.nonzero().view(-1)
 
-    row, col = perm / num_nodes, perm % num_nodes
+    # Using // to force integer division
+    row, col = perm // num_nodes, perm % num_nodes
     return torch.stack([row, col], dim=0)
 
 
