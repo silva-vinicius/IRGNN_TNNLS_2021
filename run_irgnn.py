@@ -80,6 +80,10 @@ def train():
         sub_data = sub_data.to(dev)
         optimizer.zero_grad()
         z = tr_x.new_zeros(tr_x.size(0), node_hidden_dim)
+        
+        # Casting a float tensor to a long tensor as we need integer indexes for the edges
+        sub_data.edge_index = sub_data.edge_index.type(torch.LongTensor).to(dev)
+
         z[sub_data.n_id] = model.encode(tr_x[sub_data.n_id], sub_data.edge_index, tr_edge_attr[sub_data.e_id])
         loss = model.log_loss(z, tr_edge_index[:, sub_data.e_id], tr_edge_attr[sub_data.e_id])
         l.append(loss.item())
