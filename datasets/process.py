@@ -41,7 +41,7 @@ class AmazonDataset(InMemoryDataset):
 	def parse(self, path):
 		g = gzip.open(path, 'rb')
 		for l in g:
-		yield eval(l)
+			yield eval(l)
 
 
 	def __format_related_products(self, dataset_df):
@@ -100,6 +100,8 @@ class AmazonDataset(InMemoryDataset):
 		node_idx_dict = self.getDict(data.asin)
 		d2v_model = gensim.models.doc2vec.Doc2Vec.load(self.raw_dir + "/reviews_" + cat + ".d2v")
 		nodes = set(node_idx_dict.keys()) & set(d2v_model.docvecs.doctags.keys())
+
+        print(f'Doctags: {list(set(d2v_model.docvecs.doctags.keys()))}')
 
 		graph = nx.DiGraph()
 		print("Constructing graph...")
