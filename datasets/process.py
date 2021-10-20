@@ -62,8 +62,8 @@ class AmazonDataset(InMemoryDataset):
 		df = {}
 		print("Reading data...")
 		for d in tqdm(self.parse(path)):
-    		df[i] = d
-    		i += 1
+			df[i] = d
+			i += 1
 		
 		df = pd.DataFrame.from_dict(df, orient='index')
 		df['similar_item'] = self.__format_related_products(df)
@@ -101,7 +101,7 @@ class AmazonDataset(InMemoryDataset):
 		d2v_model = gensim.models.doc2vec.Doc2Vec.load(self.raw_dir + "/reviews_" + cat + ".d2v")
 		nodes = set(node_idx_dict.keys()) & set(d2v_model.docvecs.doctags.keys())
 
-        print(f'Doctags: {list(set(d2v_model.docvecs.doctags.keys()))}')
+		print(f'Doctags: {list(set(d2v_model.docvecs.doctags.keys()))}')
 
 		graph = nx.DiGraph()
 		print("Constructing graph...")
@@ -148,8 +148,3 @@ if __name__ == "__main__":
 	root = "../data/"
 	dataset = AmazonDataset(root=root)
 	dataset.process()
-	
-
-
-
-
