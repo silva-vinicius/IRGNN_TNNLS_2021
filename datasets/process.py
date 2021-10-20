@@ -6,13 +6,13 @@ import torch
 from torch_geometric.data import Data
 from torch_geometric.data import InMemoryDataset
 import gensim
+import re
 
-
+# Columns 2018:
 b_type_dict = {
-    "also_viewed": 0,
-    "also_bought": 0,
-    "bought_together": 0,
-    "buy_after_viewing": 0
+    "also_view": 0,
+    "also_buy": 0,
+    "similar_item": 0
 }
 
 _urls = "http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/"
@@ -43,6 +43,20 @@ class AmazonDataset(InMemoryDataset):
       for l in g:
         yield eval(l)
 
+
+    def __format_related_products(self, dataset_df):
+        return dataset_df['similar_item'].apply(
+            lambda x: re.findall(r'href="\/dp\/(.*?)\/', x)
+        )
+    
+    def __merge_related(self, df_row):
+        related_dict = {
+            'also_buy': df_row['also_buy'],
+            'also_view': df_row['also_view'],
+            'similar_item': df_row['similar_item']
+        }
+        return related_dict
+
     def getDF(self, path):
       i = 0
       df = {}
@@ -50,7 +64,12 @@ class AmazonDataset(InMemoryDataset):
       for d in tqdm(self.parse(path)):
         df[i] = d
         i += 1
-      return pd.DataFrame.from_dict(df, orient='index')
+      
+      df = pd.DataFrame.from_dict(df, orient='index')
+      df['similar_item'] = self.__format_related_products(df)
+      df['related'] = df.apply(self.__merge_related, axis=1)
+      return df
+
 
     def getDict(self, df):
         d = {}
@@ -110,11 +129,12 @@ class AmazonDataset(InMemoryDataset):
         edge_index, edge_attr = self.amazon_edges(graph)
 
         print("Graph completed!")
+        self.nx_graph = graph
 
         amazon_data = Data(
-        x=node_attr,
-        edge_index=edge_index,
-        edge_attr=edge_attr,
+          x=node_attr,
+          edge_index=edge_index,
+          edge_attr=edge_attr,
         )
 
         data_list = [amazon_data]
