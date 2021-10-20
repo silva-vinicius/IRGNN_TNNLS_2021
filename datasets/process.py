@@ -62,8 +62,8 @@ class AmazonDataset(InMemoryDataset):
 		df = {}
 		print("Reading data...")
 		for d in tqdm(self.parse(path)):
-		df[i] = d
-		i += 1
+    		df[i] = d
+    		i += 1
 		
 		df = pd.DataFrame.from_dict(df, orient='index')
 		df['similar_item'] = self.__format_related_products(df)
